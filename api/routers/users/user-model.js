@@ -10,7 +10,14 @@ async function insertUser(user) {
   return newUserObject // { user_id: 7, username: 'foo', password: 'xxxxxxx' }
 }
 
+async function findByUsername(username) {
+  const rows = await db('users').where('users.username', username).first()
+  console.log('this is rows',rows)
+  return rows 
+}
+
 module.exports={
     getAllUsers,
-    insertUser
+    insertUser,
+    findByUsername
 }

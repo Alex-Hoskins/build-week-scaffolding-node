@@ -2,7 +2,7 @@ exports.up = async (knex) => {
   await knex.schema
     .createTable('users', (users) => {
       users.increments('user_id')
-      users.string('username', 200).notNullable()
+      users.string('username', 200).notNullable().unique()
       users.string('password', 200).notNullable()
       users.string('email', 200).notNullable()
     })
@@ -10,7 +10,7 @@ exports.up = async (knex) => {
       table.increments('item_id')
       table.string('item_name', 200).notNullable()
       table.string('item_description', 200)
-      table.string('item_image', 400)
+      table.string('item_image', 300)
     })
     .createTable('category', (table) => {
       table.increments('category_id')
