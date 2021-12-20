@@ -2,7 +2,11 @@ const bcrypt = require('bcryptjs')
 const { tokenBuilder } = require('./auth-helpers')
 const router = require('express').Router()
 const User= require('../users/user-model')
+const Item= require('../items/item-model')
 const { BCRYPT_ROUNDS } = require('../../../config')
+const {
+restricted
+}=require('./auth-middleware')
 
 router.post('/register', async (req, res, next) => {
     let user = req.body
@@ -34,5 +38,16 @@ router.post('/login', (req, res, next) => {
       })
       .catch(next)
   })
+
+router.get('/items', restricted, (req, res, next)=>{
+    user_id=req.decodedJwt.user_id
+    Item.getItemsByUser(user_id)
+    .then(item=>{
+        res.status(200).json(item)
+    })
+    .catch(next)
+})
+
+
 
 module.exports=router

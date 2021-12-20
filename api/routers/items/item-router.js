@@ -1,5 +1,6 @@
 const router= require('express').Router()
 const Item = require('./item-model')
+const {restricted}=require('../auth/auth-middleware')
 
 router.get('/', (req, res, next)=>{
     Item.getItems()
@@ -8,6 +9,7 @@ router.get('/', (req, res, next)=>{
     })
     .catch(next)
 })
+
 router.get('/:item_id', (req, res, next)=>{
     Item.getItemById(req.params.item_id)
     .then(item=>{
@@ -16,8 +18,8 @@ router.get('/:item_id', (req, res, next)=>{
     .catch(next)
 })
 
-router.post('/', (req, res, next)=>{
-    Item.addItem(req.body)
+router.post('/', restricted, (req, res, next)=>{
+    Item.addItem(req.body, req.decodedJwt.user_id)
     .then(item=>{
         res.status(200).json(item)
     })
