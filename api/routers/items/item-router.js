@@ -26,7 +26,7 @@ router.post('/', restricted, (req, res, next)=>{
     .catch(next)
 })
 
-router.put('/:item_id', (req, res, next)=>{
+router.put('/:item_id', restricted, (req, res, next)=>{
     Item.updateItem(req.params.item_id, req.body)
     .then(item=>{
         res.status(200).json(item)
@@ -34,7 +34,7 @@ router.put('/:item_id', (req, res, next)=>{
     .catch(next)
 })
 
-router.delete('/:item_id', (req, res, next)=>{
+router.delete('/:item_id', restricted, (req, res, next)=>{
     Item.deleteItem(req.params.item_id)
     .then(numDeleted=>{
         res.status(200).json(numDeleted)

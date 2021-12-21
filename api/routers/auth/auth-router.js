@@ -5,10 +5,13 @@ const User= require('../users/user-model')
 const Item= require('../items/item-model')
 const { BCRYPT_ROUNDS } = require('../../../config')
 const {
-restricted
+restricted,
+checkLoginBody,
+checkRegBody,
+checkUsername
 }=require('./auth-middleware')
 
-router.post('/register', async (req, res, next) => {
+router.post('/register', checkRegBody, checkUsername, async (req, res, next) => {
     let user = req.body
     
     const hash = await bcrypt.hashSync(user.password, BCRYPT_ROUNDS)
@@ -21,7 +24,7 @@ router.post('/register', async (req, res, next) => {
       .catch(next)
   })
 
-router.post('/login', (req, res, next) => {
+router.post('/login', checkLoginBody, (req, res, next) => {
     let { username, password } = req.body
   
     User.findByUsername( username )
