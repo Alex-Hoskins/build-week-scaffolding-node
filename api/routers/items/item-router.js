@@ -1,6 +1,10 @@
 const router= require('express').Router()
 const Item = require('./item-model')
 const {restricted}=require('../auth/auth-middleware')
+const {
+    checkReqBody,
+    checkItemExists,
+    }=require('./item-middleware')
 
 router.get('/', (req, res, next)=>{
     Item.getItems()
@@ -18,7 +22,7 @@ router.get('/:item_id', (req, res, next)=>{
     .catch(next)
 })
 
-router.post('/', restricted, (req, res, next)=>{
+router.post('/', restricted, checkReqBody, (req, res, next)=>{
     Item.addItem(req.body, req.decodedJwt.user_id)
     .then(item=>{
         res.status(200).json(item)
@@ -26,7 +30,7 @@ router.post('/', restricted, (req, res, next)=>{
     .catch(next)
 })
 
-router.put('/:item_id', restricted, (req, res, next)=>{
+router.put('/:item_id', restricted, checkReqBody,(req, res, next)=>{
     Item.updateItem(req.params.item_id, req.body)
     .then(item=>{
         res.status(200).json(item)
@@ -34,10 +38,10 @@ router.put('/:item_id', restricted, (req, res, next)=>{
     .catch(next)
 })
 
-router.delete('/:item_id', restricted, (req, res, next)=>{
+router.delete('/:item_id', restricted, checkItemExists,(req, res, next)=>{
     Item.deleteItem(req.params.item_id)
     .then(numDeleted=>{
-        res.status(200).json(numDeleted)
+        res.status(200).json(`Deleted ${numDeleted} item at item_id ${req.params.item_id}`)
     })
     .catch(next)
 })
